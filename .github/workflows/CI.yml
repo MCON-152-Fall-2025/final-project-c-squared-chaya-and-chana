@@ -22,7 +22,3 @@ jobs:
 
       - name: Build with Maven
         run: mvn -ntp -B clean package
-
-      - name: Run tests
-        working-directory: recipeshare
-        run: mvn -ntp -B test
