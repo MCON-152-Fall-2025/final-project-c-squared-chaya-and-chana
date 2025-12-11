@@ -21,4 +21,4 @@ jobs:
 
       - name: Run tests
         working-directory: recipeshare
-        run: mvn -ntp -B tests
+        run: mvn -ntp -B test
