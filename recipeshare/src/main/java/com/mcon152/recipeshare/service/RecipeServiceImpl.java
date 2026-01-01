@@ -30,6 +30,23 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    public List<Recipe> getAllRecipes(String sort) {
+        List<Recipe> recipes = repo.findAll();
+
+        if (sort == null || sort.isBlank()) {
+            return recipes; // default behavior unchanged
+        }
+
+        return switch (sort.toLowerCase()) {
+            case "title" -> new TitleAscendingSortStrategy().sort(recipes);
+            case "servings" -> new ServingsAscendingSortStrategy().sort(recipes);
+            case "newest" -> new NewestFirstSortStrategy().sort(recipes);
+            default -> recipes; // unknown sort -> unchanged
+        };
+    }
+
+
+    @Override
     public Optional<Recipe> getRecipeById(long id) {
         return repo.findById(id);
     }
