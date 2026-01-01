@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface RecipeService {
     Recipe addRecipe(Recipe recipe);
     List<Recipe> getAllRecipes();
+    List<Recipe> getAllRecipes(String sort);
     Optional<Recipe> getRecipeById(long id);
     boolean deleteRecipe(long id);
     Optional<Recipe> updateRecipe(long id, Recipe updatedRecipe);
