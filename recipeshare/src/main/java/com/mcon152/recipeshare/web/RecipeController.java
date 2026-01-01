@@ -51,9 +51,10 @@ public class RecipeController {
      * Retrieve all recipes. 200 OK.
      */
     @GetMapping
-    public ResponseEntity<List<Recipe>> getAllRecipes() {
-        logger.info("Received request to get all recipes");
-        return ResponseEntity.ok(recipeService.getAllRecipes());
+    public ResponseEntity<List<Recipe>> getAllRecipes(
+            @RequestParam(required = false) String sort) {
+        logger.info("Received request to get all recipes with sort: {}", sort);
+        return ResponseEntity.ok(recipeService.getAllRecipes(sort));
     }
 
     /**
