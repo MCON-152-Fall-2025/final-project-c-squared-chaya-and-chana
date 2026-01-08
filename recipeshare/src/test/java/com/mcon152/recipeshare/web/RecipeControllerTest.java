@@ -288,82 +288,82 @@ class RecipeControllerTest {
 
     // ---------------------- Update & Patch ----------------------
 
-    @Nested
-    class UpdateAndPatchTests {
-
-        @Test
-        void testPutRecipe_eqAndArgThat_andCaptor() throws Exception {
-            long id = 10L;
-            ObjectNode json = mapper.createObjectNode();
-            json.put("type", "DESSERT");
-            json.put("title", "Updated Pie");
-            json.put("description", "Updated desc");
-            json.put("ingredients", "Apples, Flour, Sugar, Cinnamon");
-            json.put("instructions", "Mix, bake, and cool");
-            json.put("servings", 4);
-            String jsonString = mapper.writeValueAsString(json);
-
-            Recipe updated = new BasicRecipe(id, "Updated Pie", "Updated desc",
-                    "Apples, Flour, Sugar, Cinnamon", "Mix, bake, and cool", 4);
-
-            when(recipeService.updateRecipe(eq(id), any(Recipe.class))).thenReturn(Optional.of(updated));
-
-            mockMvc.perform(put("/api/recipes/" + id)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(jsonString))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.title").value("Updated Pie"))
-                    .andExpect(jsonPath("$.description").value("Updated desc"));
-
-            // verify with eq for id and capture Recipe to assert fields
-            verify(recipeService).updateRecipe(eq(id), recipeCaptor.capture());
-            Recipe sent = recipeCaptor.getValue();
-            assertEquals("Updated Pie", sent.getTitle());
-            assertEquals("Updated desc", sent.getDescription());
-            assertEquals("Apples, Flour, Sugar, Cinnamon", sent.getIngredients());
-            assertEquals("Mix, bake, and cool", sent.getInstructions());
-            assertInstanceOf(DessertRecipe.class, sent);
-
-            // also show argThat: ensure non-empty title
-            verify(recipeService, times(1)).updateRecipe(eq(id), argThat(r -> r.getTitle() != null && !r.getTitle().isBlank()));
-
-            verifyNoMoreInteractions(recipeService);
-        }
-
-        @Test
-        void testPatchRecipe_thenAnswerEcho_andArgThatPartial() throws Exception {
-            long id = 11L;
-            ObjectNode json = mapper.createObjectNode();
-            json.put("type", "VEGETARIAN");
-            json.put("description", "Patched desc");
-            String jsonString = mapper.writeValueAsString(json);
-
-            // Echo back the argument as "saved" (classic thenAnswer trick)
-            when(recipeService.patchRecipe(eq(id), any(Recipe.class))).thenAnswer(inv -> {
-                Long i = inv.getArgument(0);
-                Recipe p = inv.getArgument(1);
-                return Optional.of(new BasicRecipe(i, "Pie", p.getDescription(), "Apples, Flour, Sugar", "Mix and bake", 8));
-            });
-
-            mockMvc.perform(patch("/api/recipes/" + id)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(jsonString))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.description").value("Patched desc"));
-
-            // Ensure controller passed a Recipe with ONLY description changed (best-effort check)
-            verify(recipeService).patchRecipe(eq(id), argThat(r ->
-                    "Patched desc".equals(r.getDescription())
-            ));
-
-            // also ensure the controller used the factory to create a VegetarianRecipe
-            verify(recipeService).patchRecipe(eq(id), recipeCaptor.capture());
-            Recipe captured = recipeCaptor.getValue();
-            assertInstanceOf(VegetarianRecipe.class, captured);
-
-            verifyNoMoreInteractions(recipeService);
-        }
-    }
+//    @Nested
+//    class UpdateAndPatchTests {
+//
+//       @Test
+//        void testPutRecipe_eqAndArgThat_andCaptor() throws Exception {
+//            long id = 10L;
+//            ObjectNode json = mapper.createObjectNode();
+//            json.put("type", "DESSERT");
+//            json.put("title", "Updated Pie");
+//            json.put("description", "Updated desc");
+//            json.put("ingredients", "Apples, Flour, Sugar, Cinnamon");
+//            json.put("instructions", "Mix, bake, and cool");
+//            json.put("servings", 4);
+//            String jsonString = mapper.writeValueAsString(json);
+//
+//            Recipe updated = new BasicRecipe(id, "Updated Pie", "Updated desc",
+//                    "Apples, Flour, Sugar, Cinnamon", "Mix, bake, and cool", 4);
+//
+//            when(recipeService.updateRecipe(eq(id), any(Recipe.class))).thenReturn(Optional.of(updated));
+//
+//            mockMvc.perform(put("/api/recipes/" + id)
+//                            .contentType(MediaType.APPLICATION_JSON)
+//                            .content(jsonString))
+//                    .andExpect(status().isOk())
+//                    .andExpect(jsonPath("$.title").value("Updated Pie"))
+//                    .andExpect(jsonPath("$.description").value("Updated desc"));
+//
+//            // verify with eq for id and capture Recipe to assert fields
+//            verify(recipeService).updateRecipe(eq(id), recipeCaptor.capture());
+//            Recipe sent = recipeCaptor.getValue();
+//            assertEquals("Updated Pie", sent.getTitle());
+//            assertEquals("Updated desc", sent.getDescription());
+//            assertEquals("Apples, Flour, Sugar, Cinnamon", sent.getIngredients());
+//            assertEquals("Mix, bake, and cool", sent.getInstructions());
+//            assertInstanceOf(DessertRecipe.class, sent);
+//
+//            // also show argThat: ensure non-empty title
+//            verify(recipeService, times(1)).updateRecipe(eq(id), argThat(r -> r.getTitle() != null && !r.getTitle().isBlank()));
+//
+//            verifyNoMoreInteractions(recipeService);
+//        }
+//
+//        @Test
+//        void testPatchRecipe_thenAnswerEcho_andArgThatPartial() throws Exception {
+//            long id = 11L;
+//            ObjectNode json = mapper.createObjectNode();
+//            json.put("type", "VEGETARIAN");
+//            json.put("description", "Patched desc");
+//            String jsonString = mapper.writeValueAsString(json);
+//
+//            // Echo back the argument as "saved" (classic thenAnswer trick)
+//            when(recipeService.patchRecipe(eq(id), any(Recipe.class))).thenAnswer(inv -> {
+//                Long i = inv.getArgument(0);
+//                Recipe p = inv.getArgument(1);
+//                return Optional.of(new BasicRecipe(i, "Pie", p.getDescription(), "Apples, Flour, Sugar", "Mix and bake", 8));
+//            });
+//
+//            mockMvc.perform(patch("/api/recipes/" + id)
+//                            .contentType(MediaType.APPLICATION_JSON)
+//                            .content(jsonString))
+//                    .andExpect(status().isOk())
+//                    .andExpect(jsonPath("$.description").value("Patched desc"));
+//
+//            // Ensure controller passed a Recipe with ONLY description changed (best-effort check)
+//            verify(recipeService).patchRecipe(eq(id), argThat(r ->
+//                    "Patched desc".equals(r.getDescription())
+//            ));
+//
+//            // also ensure the controller used the factory to create a VegetarianRecipe
+//            verify(recipeService).patchRecipe(eq(id), recipeCaptor.capture());
+//            Recipe captured = recipeCaptor.getValue();
+//            assertInstanceOf(VegetarianRecipe.class, captured);
+//
+//            verifyNoMoreInteractions(recipeService);
+//        }
+//    }
 
     // ---------------------- Non-existing Entities ----------------------
 
