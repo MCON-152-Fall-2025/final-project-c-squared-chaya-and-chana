@@ -33,10 +33,6 @@ public class RecipeServiceImpl implements RecipeService {
     public List<Recipe> getAllRecipes(String sort) {
         List<Recipe> recipes = repo.findAll();
 
-        if (sort == null || sort.isBlank()) {
-            return recipes; // default behavior unchanged
-        }
-
         return switch (sort.toLowerCase()) {
             case "title" -> new TitleAscendingSortStrategy().sort(recipes);
             case "servings" -> new ServingsAscendingSortStrategy().sort(recipes);
