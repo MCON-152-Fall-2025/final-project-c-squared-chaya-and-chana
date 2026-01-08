@@ -54,6 +54,9 @@ public class RecipeController {
     public ResponseEntity<List<Recipe>> getAllRecipes(
             @RequestParam(required = false) String sort) {
         logger.info("Received request to get all recipes with sort: {}", sort);
+        if (sort == null) {
+            return ResponseEntity.ok(recipeService.getAllRecipes());
+        }
         return ResponseEntity.ok(recipeService.getAllRecipes(sort));
     }
 

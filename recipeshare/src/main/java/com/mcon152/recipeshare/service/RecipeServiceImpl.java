@@ -33,7 +33,7 @@ public class RecipeServiceImpl implements RecipeService {
     public List<Recipe> getAllRecipes(String sort) {
         List<Recipe> recipes = repo.findAll();
 
-        if (sort==null) {
+        if (sort == null) {
             return recipes;
         }
 
